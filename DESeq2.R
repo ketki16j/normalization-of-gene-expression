@@ -1,36 +1,50 @@
-# fix the import file path to be the feature counts output, the directory prefix to be the longer names, and the output path
-## specifically, lines 7, 8 and 35 in this file
-# must have the DESeq2 library installed
+# Load necessary libraries
+library(DESeq2)
+library(edgeR)
 
-library("DESeq2")
+# Assume `count_data` is your raw count matrix (genes as rows, samples as columns)
+# `metadata` is the metadata for the samples
 
-all_counts <- read.delim("/home/scratch/dir/GVDS_all_bam_counts_2021v1.txt", header = TRUE, skip=1, sep="\t")
-dir_prefix<-"X.scratch.user.GEUVADIS.bam_input."
+# Step 1: Filter genes based on read count threshold
+filter_genes <- function(count_data, threshold = 6, min_samples = 0.2) {
+  sample_count <- ncol(count_data)
+  min_samples <- ceiling(min_samples * sample_count)
+  filtered <- count_data[rowSums(count_data >= threshold) >= min_samples, ]
+  return(filtered)
+}
 
-# removes the columns that are not the geneid and sample headers
-all_counts<-all_counts[,c(1, 7:ncol(all_counts))]
+# Step 2: Filter genes based on CPM threshold
+filter_genes_cpm <- function(count_data, cpm_threshold = 0.1, min_samples = 0.2) {
+  sample_count <- ncol(count_data)
+  min_samples <- ceiling(min_samples * sample_count)
+  cpm_values <- cpm(count_data)
+  filtered <- count_data[rowSums(cpm_values >= cpm_threshold) >= min_samples, ]
+  return(filtered)
+}
 
-# auto sample name does like a full directory; ex: â€œX.home.user.scratch.TWAS_test_bam.HG02215.1.M_111124_4.bamâ€
-# fix the sample names to be shorter
-names(all_counts)<-gsub(dir_prefix, "", colnames(all_counts))
-names(all_counts)<-gsub(".bam", "", colnames(all_counts))
+# Apply both filters
+filtered_counts <- filter_genes(count_data)
+filtered_counts <- filter_genes_cpm(filtered_counts)
 
-# changes the row names to gene names and then updates the columns to only be the samples
-# seems like the dataframe will work best with this set up
-geneNames<-all_counts[,1]
-rownames(all_counts)<-geneNames
-all_counts<-all_counts[,2:ncol(all_counts)]
+# Step 3: Normalize using DESeq2
+dds <- DESeqDataSetFromMatrix(countData = filtered_counts,
+                              colData = metadata,
+                              design = ~ 1)  # Assuming no specific design for normalization
+dds <- estimateSizeFactors(dds)
+normalized_counts <- counts(dds, normalized = TRUE)
 
-# creates a reference table to run the DE seq with
-sample_info<-DataFrame(condition=names(all_counts), row.names=names(all_counts))
+# Step 4: Apply rank-based inverse normal transformation (INT)
+rank_int <- function(x) {
+  n <- length(x)
+  ranks <- rank(x, ties.method = "average")
+  qnorm((ranks - 0.5) / n)
+}
 
-# runs the DESeq2
-ds<-DESeqDataSetFromMatrix(countData=all_counts, colData=sample_info, design= ~condition)
-keep_genes<-rowSums(counts(ds))>0
-# from 63677 to 56957
-ds<-ds[keep_genes,]
-ds<-estimateSizeFactors(ds)
-normalized_counts<-counts(ds, normalized=TRUE)
+int_normalized_counts <- apply(normalized_counts, 1, rank_int)
+int_normalized_counts <- t(int_normalized_counts)  # Transpose back to original format
 
-write.table(normalized_counts, file = "GVDS_normalized_counts.txt", sep="\t", quote=FALSE, col.names=NA)
+# Output the processed data
+write.csv(int_normalized_counts, "int_normalized_counts.csv", row.names = TRUE)
 
+# Verify results
+print("Filtering and normalization completed successfully.")
