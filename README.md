@@ -19,6 +19,7 @@ We first need to extract gene count specific for a tissue to do normalization. W
 The script  ```extract_genecount_braincortextissue.R``` extract specific samples for brain cortex that have RNASEQ expression values
 
 ```Step2: Normalization by different methods:```
+
 ```1. Inverse quantile Normalization:``` We first filter out the genes and samples based on a threshold value to filter out low expressed genes.
 ```
  >=6 reads in >=20%samples
