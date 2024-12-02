@@ -20,15 +20,15 @@ The script  ```extract_genecount_braincortextissue.R``` extract specific samples
 
 Step2: Normalization by different methods:
 1. Inverse quantile Normalization: We first filter out the genes and samples based on a threshold value to filter out low expressed genes.
->=6 reads in >=20%samples
->=0.1CPM in >=20% samples
+ ``>=6 reads in >=20%samples
+>=0.1CPM in >=20% samples```
 
 Then we normalized the gene count by using TMM and apply rank based inverse normal transformation (INT) across samples
 
 2. DESeq2 normalization: 
 We first need to filter out low expressed genes based on a cutoff:
->=6 reads in >=20%samples
->=0.1CPM in >=20% samples
+```>=6 reads in >=20%samples
+>=0.1CPM in >=20% samples```
 Once we filter the low expressed gene , we normalized read count using DESeq2 and apply rank based INT across samples
 
 Step3: Comparing different normalized expression: 
