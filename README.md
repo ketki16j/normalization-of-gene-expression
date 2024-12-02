@@ -14,19 +14,19 @@ Some normalization methods include:
 
 The dataset for this tutorial is obtained from the GTEx portal: https://www.gtexportal.org/
 
-Step1: Extract specific tissue gene count:
+```Step1: Extract specific tissue gene count:```
 We first need to extract gene count specific for a tissue to do normalization. We employe sample INFO/ID to extract specific tissue gene count by utilizing ```GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt``` file and gene count file ```GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct```. My analysis focus on extracting brain cortex tissue gene count for samples that have RNASEQ. 
 The script  ```extract_genecount_braincortextissue.R``` extract specific samples for brain cortex that have RNASEQ expression values
 
-Step2: Normalization by different methods:
-1. Inverse quantile Normalization: We first filter out the genes and samples based on a threshold value to filter out low expressed genes.
+```Step2: Normalization by different methods:```
+```1. Inverse quantile Normalization:``` We first filter out the genes and samples based on a threshold value to filter out low expressed genes.
 ```
  >=6 reads in >=20%samples
 >=0.1CPM in >=20% samples
 ```
 Then we normalized the gene count by using TMM and apply rank based inverse normal transformation (INT) across samples
 
-2. DESeq2 normalization: 
+```2. DESeq2 normalization: ```
 We first need to filter out low expressed genes based on a cutoff:
 ```
 >=6 reads in >=20%samples
@@ -34,7 +34,7 @@ We first need to filter out low expressed genes based on a cutoff:
 ```
 Once we filter the low expressed gene , we normalized read count using DESeq2 and apply rank based INT across samples
 
-Step3: Comparing different normalized expression: 
+```Step3: Comparing different normalized expression: ```
 The final step is to compare different normalized gene expression by utilizing cor function in R to generate correlation between predicted and normalized actual expression and observe which one gives us a higher accuracy. 
 In our case: we clearly see that inverse quantile normalization gives a higer accuracy in comparison to DESeq2 normalization.
 
