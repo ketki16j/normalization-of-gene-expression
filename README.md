@@ -15,8 +15,8 @@ Some normalization methods include:
 The dataset for this tutorial is obtained from the GTEx portal: https://www.gtexportal.org/
 
 Step1: Extract specific tissue gene count:
-We first need to extract gene count specific for a tissue to do normalization. We employe sample INFO/ID to extract specific tissue gene count by utilizing GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt file and gene count file GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct. My analysis focus on extracting brain cortex tissue gene count for samples that have RNASEQ. 
-The script extract specific samples for brain cortex that have RNASEQ expression values
+We first need to extract gene count specific for a tissue to do normalization. We employe sample INFO/ID to extract specific tissue gene count by utilizing ```GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt``` file and gene count file ```GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct```. My analysis focus on extracting brain cortex tissue gene count for samples that have RNASEQ. 
+The script  ```extract_genecount_braincortextissue.R``` extract specific samples for brain cortex that have RNASEQ expression values
 
 Step2: Normalization by different methods:
 1. Inverse quantile Normalization: We first filter out the genes and samples based on a threshold value to filter out low expressed genes.
