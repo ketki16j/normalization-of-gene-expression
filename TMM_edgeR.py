@@ -1,9 +1,9 @@
+#/bin/python
+
 import pandas as pd
 import numpy as np
 from edgeR import DGEList, calcNormFactors, cpm
-from scipy.stats import rankdata, norm
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
+
 
 # Step 1: Load raw count data
 # Replace 'raw_counts.csv' with your file path
