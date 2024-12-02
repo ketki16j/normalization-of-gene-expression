@@ -35,6 +35,7 @@ Step3: Comparing different normalized expression:
 The final step is to compare different normalized gene expression by utilizing cor function in R to generate correlation between predicted and normalized actual expression and observe which one gives us a higher accuracy. 
 In our case: we clearly see that inverse quantile normalization gives a higer accuracy in comparison to DESeq2 normalization.
 
-<img width="376" alt="image" src="https://github.com/user-attachments/assets/1c968171-f272-409e-b293-de4795b794b1">
+![image](https://github.com/user-attachments/assets/8b3bb4d3-10c8-40ce-9258-b684c079ab5a)
+
 
 
